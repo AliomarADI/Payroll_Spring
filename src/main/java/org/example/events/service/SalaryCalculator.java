@@ -2,37 +2,43 @@ package org.example.events.service;
 
 import org.example.events.Models.Employee;
 import org.example.events.Models.EmployeeType;
+import org.example.events.dao.EmployeeDao;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class SalaryCalculator implements ApplicationEventPublisher {
+public class SalaryCalculator{
 
 //    Employee employee;
 
+    EmployeeDao employeeDao = new EmployeeDao();
 
     public void getCalcSalary(Employee employee){
         if (employee.getEmployeeType().equals(EmployeeType.HOURLY)){
-            getSalaryFoeHourlyWorkers(employee);
+            employee.setSalary(
+                    getSalaryForHourlyWorkers(employee));
         }else if (employee.getEmployeeType().equals(EmployeeType.SALARIED)){
-            getSalaryForSalariedWorkers(employee);
+            employee.setSalary(
+                    getSalaryForSalariedWorkers(employee));
         }else if (employee.getEmployeeType().equals(EmployeeType.COMISSION)){
-            getSalaryForCommissionWorkers(employee);
+            employee.setSalary(
+                    getSalaryForCommissionWorkers(employee));
         }else if (employee.getEmployeeType().equals(EmployeeType.SLARIEDCOMISSION)){
-            getSalaryForCommissionWithSalaryWorkers(employee);
+            employee.setSalary(
+                    getSalaryForCommissionWithSalaryWorkers(employee));
+
         }
+        employeeDao.publishUpdatedSalary(employee);
     }
 
     public double getSalaryForCommissionWorkers(Employee employee){
-        double sale = 500000;
-        return employee.getPersentOfSale() * sale;
+        return employee.getPersentOfSale() * employee.getSale()*1.1;
     }
 
     public double getSalaryForCommissionWithSalaryWorkers(Employee employee){
-        double sale = 500000;
-        return sale * employee.getPersentOfSale() + employee.getSalary();
+        return employee.getSale() * employee.getPersentOfSale() + employee.getSalary()*1.1;
     }
 
-    public double getSalaryFoeHourlyWorkers(Employee employee){
+    public double getSalaryForHourlyWorkers(Employee employee){
         if(employee.getHourOfWorks() < 0){
             return 0;
         }else if(employee.getHourOfWorks() <= 40){
@@ -46,14 +52,4 @@ public class SalaryCalculator implements ApplicationEventPublisher {
     }
 
 
-
-    @Override
-    public void publishEvent(ApplicationEvent event) {
-
-    }
-
-    @Override
-    public void publishEvent(Object o) {
-
-    }
 }

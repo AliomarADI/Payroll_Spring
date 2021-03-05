@@ -1,12 +1,28 @@
 package org.example.events.Models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "employee")
 public class Employee {
-    int id;
-    String name;
-    int hourOfWorks; // 10$ for hours
-    double salary;
-    EmployeeType employeeType;
-    double persentOfSale = 0.05;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+    private int hourOfWorks; // 10$ for hours
+    private double salary;
+    private EmployeeType employeeType;
+    private double persentOfSale = 0.05;
+    private double sale;
+
+    public double getSale() {
+        return sale;
+    }
+
+    public void setSale(double sale) {
+        this.sale = sale;
+    }
 
     public double getPersentOfSale() {
         return persentOfSale;
